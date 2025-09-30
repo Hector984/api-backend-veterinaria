@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.pdb
+*.cache
+*.log
+*.dbmdl
+
+# Rider
+.idea/
+
+# Otros
+*.exe
+*.dll
