@@ -22,5 +22,8 @@ namespace API_Veterinaria.Core.Entities
         public DateTime FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public DateTime? FechaBaja { get; set; }
+
+        // Propiedades de navegacion
+        public ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
     }
 }

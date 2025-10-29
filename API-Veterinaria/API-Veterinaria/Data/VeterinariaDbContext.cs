@@ -8,9 +8,9 @@ namespace API_Veterinaria.Data
 {
     public class VeterinariaDbContext : IdentityDbContext<Usuario>
     {
-        public VeterinariaDbContext(DbContextOptions options): base(options)
+        public VeterinariaDbContext(DbContextOptions options) : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -38,6 +38,7 @@ namespace API_Veterinaria.Data
 
                 if (entry.State == EntityState.Deleted)
                 {
+                    entry.State = EntityState.Modified;
                     entry.Entity.FechaBaja = DateTime.UtcNow;
                     entry.Entity.Activo = false;
                 }
@@ -47,5 +48,7 @@ namespace API_Veterinaria.Data
         }
 
         public DbSet<Veterinaria> Veterinarias { get; set; }
-    }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Mascota> Mascotas { get; set; }
+        }
 }

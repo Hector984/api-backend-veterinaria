@@ -18,6 +18,11 @@ namespace API_Veterinaria.Data.Repositories
             return await _context.Veterinarias.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<Veterinaria> GetByUserIdAsync(string userId)
+        {
+            return await _context.Veterinarias.FirstOrDefaultAsync(x => x.UsuarioId == userId);
+        }
+
         public async Task<IEnumerable<Veterinaria>> GetAllAsync()
         {
             return await _context.Veterinarias.ToListAsync();

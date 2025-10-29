@@ -40,6 +40,14 @@ namespace API_Veterinaria.Controllers
             return Ok(veterinaria);
         }
 
+        [HttpGet("mi-veterinaria")]
+        public async Task<ActionResult> GetVeterinariaUsuario()
+        {
+            var veterinaria = await _veterinariaService.GetVeterinariaUsuarioAsync();
+
+            return Ok(veterinaria);
+        }
+
         // POST: VeterinariasController
         [HttpPost]
         public async Task<ActionResult> PostVeterinaria(RegistrarVeterinariaDTO registrarVeterinariaDTO)
@@ -50,46 +58,51 @@ namespace API_Veterinaria.Controllers
             return CreatedAtRoute("ObtenerVeterinaria", new { veterinariaDTO.Id }, veterinariaDTO); 
         }
 
-        // GET: VeterinariasController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateVeterinariaAsync(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO)
+        {
+            try
+            {
+                await _veterinariaService.UpdateVeterinariaAsync(id, registrarVeterinariaDTO);
 
-        // POST: VeterinariasController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
 
-        // GET: VeterinariasController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteVeterinariaAsync(int id)
+        {
+            try
+            {
+                await _veterinariaService.DeleteVeterinariaAsync(id);
 
-        // POST: VeterinariasController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
+        
     }
 }
