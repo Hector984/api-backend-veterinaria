@@ -4,7 +4,7 @@ namespace API_Veterinaria.Core.DTOs.Veterinaria
 {
     public class RegistrarVeterinariaDTO
     {
-        [Required(ErrorMessage = "La propiedad {0} es requerida")]
+        [Required(ErrorMessage = "El campo {0} es requerida")]
         public required string Nombre { get; set; }
         [Required]
         public required string Direccion { get; set; }

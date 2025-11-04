@@ -1,9 +1,9 @@
 ﻿using API_Veterinaria.Business.Interfaces;
+using API_Veterinaria.Core.DTOs.Autenticacion;
 using API_Veterinaria.Core.DTOs.Veterinaria;
 using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace API_Veterinaria.Business.Services
 {
@@ -26,7 +26,7 @@ namespace API_Veterinaria.Business.Services
 
             if (usuario is null)
             {
-                throw new InvalidOperationException("Usuario no encontrado");
+                throw new KeyNotFoundException("Usuario no encontrado");
             }
 
             var veterinaria = _mapper.Map<Veterinaria>(registrarVeterinariaDTO);
@@ -70,7 +70,7 @@ namespace API_Veterinaria.Business.Services
 
             if (usuario is null)
             {
-                throw new UnauthorizedAccessException("Usuario no encontrado");
+                throw new KeyNotFoundException("Usuario no encontrado");
             }
 
             var veterinaria = await _veterinariaRepository.GetByUserIdAsync(usuario.Id);
@@ -89,7 +89,7 @@ namespace API_Veterinaria.Business.Services
 
             if (usuario is null)
             {
-                throw new UnauthorizedAccessException("Usuario no encontrado");
+                throw new KeyNotFoundException("Usuario no encontrado");
             }
 
             // Verificamos que la veterinaria existe

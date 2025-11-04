@@ -12,17 +12,17 @@ namespace API_Veterinaria.Data.Repositories
             _context = context;
         }
 
-        public async Task<Mascota> GetByIdAsync(int id)
+        public async Task<Mascota?> GetById(int id)
         {
             return await _context.Mascotas.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<Mascota>> GetAllByClienteIdAsync(int clienteId)
+        public async Task<IEnumerable<Mascota>> GetAllByClienteId(int clienteId)
         {
             return await _context.Mascotas.Where(x => x.ClienteId == clienteId).ToListAsync();
         }
 
-        public async Task<IEnumerable<Mascota>> GetAllByVeterinariaAsync(int veterinariaId) 
+        public async Task<IEnumerable<Mascota>> GetAllByVeterinariaId(int veterinariaId) 
         {
             return await _context.Mascotas
                 .Where(x => x.Cliente.VeterinariaId == veterinariaId)
@@ -30,19 +30,27 @@ namespace API_Veterinaria.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task AddAync(Mascota mascota) 
+        public async Task<Mascota?> GetByIdConClienteYVeterinaria(int mascotaId)
+        {
+            return await _context.Mascotas
+                .Include(m => m.Cliente)
+                    .ThenInclude(m => m.Veterinaria)
+                .FirstOrDefaultAsync(m => m.Id == mascotaId);
+        }
+
+        public async Task Add(Mascota mascota) 
         {
             await _context.Mascotas.AddAsync(mascota);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Mascota mascota) 
+        public async Task Update(Mascota mascota) 
         {
             _context.Mascotas.Update(mascota);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Mascota mascota) 
+        public async Task Delete(Mascota mascota) 
         {
             _context.Mascotas.Remove(mascota);
             await _context.SaveChangesAsync();
