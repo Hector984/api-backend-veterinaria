@@ -18,7 +18,7 @@ namespace API_Veterinaria.Utilities
 
             // Mapeos de Cliente
             CreateMap<Cliente, ClienteDTO>()
-                .ForMember(ent => ent.NombreCompleto,
+                .ForMember(ent => ent.Nombre,
                     config => config.MapFrom(ent => MapearNombreCompletoCliente(ent)));
 
             CreateMap<RegistrarClienteDTO, Cliente>();

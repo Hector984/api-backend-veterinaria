@@ -6,7 +6,7 @@ namespace API_Veterinaria.Business.Interfaces
     public interface IClienteService
     {
         Task<ClienteDTO?> ObtenerClientePorId(int clienteId);
-        Task<IEnumerable<ClienteDTO>> ObtenerClientes();
+        Task<IEnumerable<ClienteDTO>> ObtenerClientesPorVeterinariaId(int veterinariaId);
         Task<ClienteDTO> RegistrarCliente(RegistrarClienteDTO dto);
         Task ActualizarCliente(int clienteId, ActualizarClienteDTO dto);
         Task ActualizarEstatusCliente(int clienteId);

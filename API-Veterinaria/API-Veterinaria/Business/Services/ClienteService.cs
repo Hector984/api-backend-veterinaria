@@ -38,9 +38,29 @@ namespace API_Veterinaria.Business.Services
             return clienteDTO;
         }
 
-        public async Task<IEnumerable<ClienteDTO>> ObtenerClientes()
+        public async Task<IEnumerable<ClienteDTO>> ObtenerClientesPorVeterinariaId(int veterinariaId)
         {
-            var clientes = await _clienteRepository.GetAll();
+
+            var usuario = await _usuarioService.GetUsuarioByEmail();
+
+            if (usuario is null)
+            {
+                throw new KeyNotFoundException("Usuario no encontrado");
+            }
+
+            var veterinaria = await _veterinariaRepository.GetByIdAsync(veterinariaId);
+
+            if (veterinaria is null)
+            {
+                throw new KeyNotFoundException("Veterinaria no encontrada");
+            }
+
+            if (usuario.Id != veterinaria.UsuarioId)
+            {
+                throw new UnauthorizedAccessException("No tienes permiso para esta acción");
+            }
+
+            var clientes = await _clienteRepository.GetAllClientesByVeterinariaId(veterinariaId);
 
             var clientesDTO = _mapper.Map<IEnumerable<ClienteDTO>>(clientes);
 

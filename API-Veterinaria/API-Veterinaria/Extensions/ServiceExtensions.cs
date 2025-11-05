@@ -19,10 +19,14 @@ namespace API_Veterinaria.Extensions
             //Repositories
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IVeterinariaRepository, VeterinariaRepository>();
+            services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IMascotaRepository, MascotaRepository>();
 
             // Services
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IVeterinariaService, VeterinariaService>();
+            services.AddScoped<IClienteService, ClienteService>();
+            services.AddScoped<IMascotaService, MascotaService>();
 
             return services;
         }

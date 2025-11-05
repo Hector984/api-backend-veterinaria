@@ -14,7 +14,7 @@ namespace API_Veterinaria.Core.DTOs.Cliente
         public required string ApellidoMaterno { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "La dirección de correo es invalida")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El campo {0} es requerido")]

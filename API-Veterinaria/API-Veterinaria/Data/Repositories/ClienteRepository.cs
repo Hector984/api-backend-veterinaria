@@ -25,9 +25,11 @@ namespace API_Veterinaria.Data.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<IEnumerable<Cliente>> GetAll()
+        public async Task<IEnumerable<Cliente>> GetAllClientesByVeterinariaId(int veterinariaId)
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes
+                .Where(x => x.VeterinariaId == veterinariaId)
+                .ToListAsync();
         }
 
         public async Task Add(Cliente cliente)
