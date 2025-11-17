@@ -2,9 +2,7 @@
 using API_Veterinaria.Core.DTOs.Cliente;
 using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
-using API_Veterinaria.Data.Repositories;
 using AutoMapper;
-using System.Net.WebSockets;
 
 namespace API_Veterinaria.Business.Services
 {

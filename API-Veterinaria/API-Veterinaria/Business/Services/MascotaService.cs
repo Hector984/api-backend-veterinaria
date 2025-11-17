@@ -1,10 +1,8 @@
 ﻿using API_Veterinaria.Business.Interfaces;
-using API_Veterinaria.Core.DTOs.Compartidos;
 using API_Veterinaria.Core.DTOs.Mascota;
 using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API_Veterinaria.Business.Services
 {
@@ -29,6 +27,11 @@ namespace API_Veterinaria.Business.Services
             // Revisar que la mascota pertenezca a la veterinaria desde la que se hace la consulta
             var mascota = await _mascotaRepository.GetById(id);
 
+            if (mascota is null)
+            {
+                throw new KeyNotFoundException("Mascota no encontrada");
+            }
+
             var mascotaDTO = _mapper.Map<MascotaDTO>(mascota);
 
             return mascotaDTO;
@@ -51,18 +54,23 @@ namespace API_Veterinaria.Business.Services
 
             if (usuario is null)
             {
-                throw new InvalidOperationException("Usuario no encontrado");
+                throw new KeyNotFoundException("Usuario no encontrado");
             }
 
             var veterinaria = await _veterinariaRepository.GetByIdAsync(veterinariaId);
 
-            // Revisar que el usuario que hace la peticion sea el dueño de la veterinaria
-            if (usuario.Id == veterinaria.UsuarioId)
+            if (veterinaria is null)
             {
-                throw new UnauthorizedAccessException("No tienes acceso a estos datos");
+                throw new KeyNotFoundException("La veterinaria no existe");
             }
 
-            var mascotas = _mascotaRepository.GetAllByVeterinariaId(veterinariaId);
+            // Revisar que el usuario que hace la peticion sea el dueño de la veterinaria
+            if (usuario.Id != veterinaria.UsuarioId)
+            {
+                throw new InvalidOperationException("No tienes acceso a estos datos");
+            }
+
+            var mascotas = await _mascotaRepository.GetAllByVeterinariaId(veterinariaId);
 
             var mascotasDTO = _mapper.Map<IEnumerable<MascotaDTO>>(mascotas);
 
@@ -100,12 +108,12 @@ namespace API_Veterinaria.Business.Services
                 
         }
 
-        public async Task ActualizarInformacionMascota(int mascotaId, ActualizarMascotaDTO actualizarVeterinariaDTO)
+        public async Task ActualizarInformacionMascota(int mascotaId, ActualizarMascotaDTO actualizarMascotaDTO)
         {
 
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
-            var veterinaria = await _veterinariaRepository.GetByIdAsync(actualizarVeterinariaDTO.VeterinariaId);
+            var veterinaria = await _veterinariaRepository.GetByIdAsync(actualizarMascotaDTO.VeterinariaId);
 
             // Validamos que la veterinaria exista
             if (veterinaria == null)
@@ -127,13 +135,18 @@ namespace API_Veterinaria.Business.Services
                 throw new KeyNotFoundException("Mascota no encontrada");
             }
 
+            if (!mascotaDB.Activo)
+            {
+                throw new InvalidOperationException("No puedes actualizar los datos si la mascota inactiva");
+            }
+
             // Validamos que el cliente este activo
             if (!mascotaDB.Cliente.Activo)
             {
                 throw new InvalidOperationException("No puedes actualizar los datos si el dueño esta inactivo");
             }
 
-            var mascota = _mapper.Map(actualizarVeterinariaDTO, mascotaDB);
+            var mascota = _mapper.Map(actualizarMascotaDTO, mascotaDB);
 
             await _mascotaRepository.Update(mascota);
 

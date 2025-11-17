@@ -3,6 +3,7 @@ using System;
 using API_Veterinaria.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API_Veterinaria.Migrations
 {
     [DbContext(typeof(VeterinariaDbContext))]
-    partial class VeterinariaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251117183908_CrearTablaConsultas")]
+    partial class CrearTablaConsultas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,7 @@ namespace API_Veterinaria.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<decimal?>("Costo")
-                        .HasColumnType("numeric");
+                        .HasColumnType("numeric(10,2)");
 
                     b.Property<string>("Diagnostico")
                         .HasColumnType("text");
@@ -104,7 +107,8 @@ namespace API_Veterinaria.Migrations
 
                     b.Property<string>("Motivo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Observaciones")
                         .HasColumnType("text");
@@ -115,9 +119,8 @@ namespace API_Veterinaria.Migrations
                     b.Property<string>("Tratamiento")
                         .HasColumnType("text");
 
-                    b.Property<string>("UsuarioId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("VeterinariaId")
                         .HasColumnType("integer");

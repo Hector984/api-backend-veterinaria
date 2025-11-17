@@ -50,5 +50,6 @@ namespace API_Veterinaria.Data
         public DbSet<Veterinaria> Veterinarias { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Mascota> Mascotas { get; set; }
+        public DbSet<Consulta> Consultas { get; set; }
         }
 }

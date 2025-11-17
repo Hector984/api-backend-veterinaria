@@ -18,7 +18,7 @@ namespace API_Veterinaria.Controllers
             _clienteService = clienteService;
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name ="ObtenerCliente")]
         public async Task<ActionResult<ClienteDTO>> ObtenerCliente([FromRoute] int id)
         {
             try
@@ -33,10 +33,14 @@ namespace API_Veterinaria.Controllers
                 return NotFound(ex.Message);
 
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
         }
 
         [HttpGet("veterinaria/{id:int}")]
-        public async Task<ActionResult<IEnumerable<ClienteDTO>>> ObtenerClientes([FromRoute] int id)
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> ObtenerClientesPorVeterinariaId([FromRoute] int id)
         {
             try
             {
@@ -54,8 +58,12 @@ namespace API_Veterinaria.Controllers
             {
                 return NotFound(ex.Message);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
 
-            
+
         }
 
         [HttpPost]
@@ -65,15 +73,66 @@ namespace API_Veterinaria.Controllers
             {
                 var clienteDTO = await _clienteService.RegistrarCliente(dto);
 
-                return Ok(clienteDTO);
+                return CreatedAtRoute("ObtenerCliente", new { clienteDTO.Id }, clienteDTO);
 
-            }catch (KeyNotFoundException ex)
+            }
+            catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
 
             }catch (UnauthorizedAccessException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> ActualizarCliente(int id, ActualizarClienteDTO dto)
+        {
+            try
+            {
+                await _clienteService.ActualizarCliente(id, dto);
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> ActivarDesactivarCliente(int id)
+        {
+            try
+            {
+                await _clienteService.ActualizarEstatusCliente(id);
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
             }
         }
     }

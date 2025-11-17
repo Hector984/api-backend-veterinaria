@@ -14,12 +14,17 @@ namespace API_Veterinaria.Data.Repositories
 
         public async Task<Mascota?> GetById(int id)
         {
-            return await _context.Mascotas.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Mascotas
+                .Include(x => x.Cliente)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Mascota>> GetAllByClienteId(int clienteId)
         {
-            return await _context.Mascotas.Where(x => x.ClienteId == clienteId).ToListAsync();
+            return await _context.Mascotas
+                .Where(x => x.ClienteId == clienteId)
+                .Include(x => x.Cliente)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Mascota>> GetAllByVeterinariaId(int veterinariaId) 
