@@ -2,6 +2,7 @@
 using API_Veterinaria.Core.DTOs.Consulta;
 using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
+using API_Veterinaria.Exceptions;
 using AutoMapper;
 
 namespace API_Veterinaria.Business.Services
@@ -24,7 +25,7 @@ namespace API_Veterinaria.Business.Services
             _mapper = mapper;
         }
 
-        public async Task<ConsultaDTO> RegistrarConsulta(RegistrarConsultaDTO dto)
+        public async Task<ConsultaDTO> RegistrarConsultaAsync(RegistrarConsultaDTO dto)
         {
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
@@ -32,26 +33,26 @@ namespace API_Veterinaria.Business.Services
 
             if (mascotaDB is null)
             {
-                throw new KeyNotFoundException("Mascota no encontrada");
+                throw new NotFoundException("Mascota no encontrada");
             }
 
-            var veteriariaDB = await _veterinariaRepository.GetByIdAsync(mascotaDB.Cliente.VeterinariaId);
+            var veteriariaDB = await _veterinariaRepository.ObtenerVeterinariaPorId(mascotaDB.Cliente.VeterinariaId);
 
             if (veteriariaDB is null)
             {
-                throw new KeyNotFoundException("Veterinaria no encontrada");
+                throw new NotFoundException("Veterinaria no encontrada");
             }
 
             // Validamos que la veterinaria pertenezca al veterinario
             if (veteriariaDB.UsuarioId != usuario!.Id)
             {
-                throw new UnauthorizedAccessException("No puedes registrar la consulta en esta veterinaria");
+                throw new ForbidenException("No puedes registrar la consulta en esta veterinaria");
             }
 
             // Validamos que la mascota pertenezca a la veterinaria
             if (mascotaDB.Cliente.VeterinariaId != veteriariaDB!.Id)
             {
-                throw new UnauthorizedAccessException("No puedes registrar la consulta en esta veterinaria");
+                throw new ForbidenException("No puedes registrar la consulta en esta veterinaria");
             }
 
 

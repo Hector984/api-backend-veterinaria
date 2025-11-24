@@ -1,7 +1,9 @@
 ﻿using API_Veterinaria.Business.Interfaces;
 using API_Veterinaria.Core.DTOs.Veterinaria;
+using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API_Veterinaria.Controllers
 {
@@ -19,51 +21,99 @@ namespace API_Veterinaria.Controllers
 
         //GET: VeterinariasController
         [HttpGet]
-        public async Task<ActionResult> GetVeterinarias()
+        [SwaggerOperation(Summary = "Obtiene todas las veterinarias", Description = "Devuelve la lista completa de veterinarias.")]
+        [ProducesResponseType(typeof(IEnumerable<VeterinariaDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ObtenerVeterinarias()
         {
-            var veterinariasDTO = await _veterinariaService.GetVeterinariasAsync();
+            var veterinariasDTO = await _veterinariaService.ObtenerVeterinariasAsync();
 
             return Ok(veterinariasDTO);
         }
 
         // GET: VeterinariasController/5
         [HttpGet("{id:int}", Name = "ObtenerVeterinaria")]
-        public async Task<ActionResult> GetVeterinaria(int id)
+        [SwaggerOperation(Summary = "Obtiene una veterinaria por id", Description = "Parámetro: id (int) identificador de la veterinaria. Respuestas: 200 (OK) con VeterinariaDTO, 404 (No encontrada), 500 (Error interno).")]
+        [ProducesResponseType(typeof(VeterinariaDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ObtenerVeterinariaPorId(int id)
         {
-            var veterinaria = await _veterinariaService.GetVeterinariaByIdAsync(id);
+            try
+            {
+                var veterinaria = await _veterinariaService.ObtenerVeterinariaPorIdAsync(id);
 
-            if (veterinaria is null)
+                return Ok(veterinaria);
+            }
+            catch (NotFoundException ex)
             {
                 return NotFound();
             }
-
-            return Ok(veterinaria);
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("mi-veterinaria")]
-        public async Task<ActionResult> GetVeterinariaUsuario()
+        [SwaggerOperation(Summary = "Obtiene la veterinaria del usuario autenticado", Description = "No requiere parámetros. Devuelve la veterinaria asociada al usuario autenticado. Respuestas: 200 (OK) con VeterinariaDTO, 404 si usuario o veterinaria no encontrada.")]
+        [ProducesResponseType(typeof(VeterinariaDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ObtenerMiVeterinaria()
         {
-            var veterinaria = await _veterinariaService.GetVeterinariaUsuarioAsync();
+            try
+            {
+                var veterinaria = await _veterinariaService.ObtenerVeterinariaPorDuenoIdAsync();
 
-            return Ok(veterinaria);
+                return Ok(veterinaria);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error interno del servidor");
+            }
+
         }
 
         // POST: VeterinariasController
         [HttpPost]
-        public async Task<ActionResult> PostVeterinaria(RegistrarVeterinariaDTO registrarVeterinariaDTO)
-        {
-
-            var veterinariaDTO = await _veterinariaService.PostVeterinariaAsync(registrarVeterinariaDTO);
-
-            return CreatedAtRoute("ObtenerVeterinaria", new { veterinariaDTO.Id }, veterinariaDTO); 
-        }
-
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult> UpdateVeterinariaAsync(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO)
+        [SwaggerOperation(Summary = "Registra una nueva veterinaria", Description = "Crea una veterinaria asociada al usuario autenticado. Parámetro: RegistrarVeterinariaDTO con los datos. Respuestas: 201 (Creado) con VeterinariaDTO, 404 si usuario no encontrado, 500 en caso de error.")]
+        [ProducesResponseType(typeof(VeterinariaDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> RegistrarVeterinaria(RegistrarVeterinariaDTO registrarVeterinariaDTO)
         {
             try
             {
-                await _veterinariaService.UpdateVeterinariaAsync(id, registrarVeterinariaDTO);
+                var veterinariaDTO = await _veterinariaService.RegistrarVeterinariaAsync(registrarVeterinariaDTO);
+
+                return CreatedAtRoute("ObtenerVeterinaria", new { veterinariaDTO.Id }, veterinariaDTO);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
+
+        [HttpPut("{id:int}")]
+        [SwaggerOperation(Summary = "Actualiza una veterinaria", Description = "Actualiza los datos de la veterinaria indicada. Parámetros: id (int) y RegistrarVeterinariaDTO con los nuevos datos. Respuestas: 204 (Sin contenido), 404 si no existe, 403 si no tiene permiso, 500 en error interno.")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ActualizarVeterinaria(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO)
+        {
+            try
+            {
+                await _veterinariaService.ActualizarVeterinariaAsync(id, registrarVeterinariaDTO);
 
                 return NoContent();
             }
@@ -82,11 +132,16 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult> DeleteVeterinariaAsync(int id)
+        [SwaggerOperation(Summary = "Activa o desactiva una veterinaria", Description = "Alterna el estado activo de la veterinaria indicada. Parámetro: id (int). Respuestas: 204 en caso de éxito, 403 si no tiene permiso, 404 si no existe, 500 en error interno.")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> ActivarDesactivarVeterinaria(int id)
         {
             try
             {
-                await _veterinariaService.DeleteVeterinariaAsync(id);
+                await _veterinariaService.ActivarDesactivarVeterinariaAsync(id);
 
                 return NoContent();
             }

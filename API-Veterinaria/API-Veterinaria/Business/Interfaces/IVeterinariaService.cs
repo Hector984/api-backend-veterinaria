@@ -4,11 +4,11 @@ namespace API_Veterinaria.Business.Interfaces
 {
     public interface IVeterinariaService
     {
-        Task<VeterinariaDTO> GetVeterinariaByIdAsync(int id);
-        Task<IEnumerable<VeterinariaDTO>> GetVeterinariasAsync();
-        Task<VeterinariaDTO> GetVeterinariaUsuarioAsync();
-        Task<VeterinariaDTO> PostVeterinariaAsync(RegistrarVeterinariaDTO registrarVeterinariaDTO);
-        Task UpdateVeterinariaAsync(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO);
-        Task DeleteVeterinariaAsync(int id);
+        Task<VeterinariaDTO> ObtenerVeterinariaPorIdAsync(int id);
+        Task<IEnumerable<VeterinariaDTO>> ObtenerVeterinariasAsync();
+        Task<VeterinariaDTO> ObtenerVeterinariaPorDuenoIdAsync();
+        Task<VeterinariaDTO> RegistrarVeterinariaAsync(RegistrarVeterinariaDTO registrarVeterinariaDTO);
+        Task ActualizarVeterinariaAsync(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO);
+        Task ActivarDesactivarVeterinariaAsync(int id);
     }
 }

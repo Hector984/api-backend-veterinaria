@@ -1,5 +1,6 @@
 ﻿using API_Veterinaria.Business.Interfaces;
 using API_Veterinaria.Core.DTOs.Cliente;
+using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,12 +24,12 @@ namespace API_Veterinaria.Controllers
         {
             try
             {
-                var veterinariasDTO = await _clienteService.ObtenerClientePorId(id);
+                var veterinariasDTO = await _clienteService.ObtenerClientePorIdAsync(id);
 
                 return Ok(veterinariasDTO);
 
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
 
@@ -44,17 +45,17 @@ namespace API_Veterinaria.Controllers
         {
             try
             {
-                var veterinariasDTO = await _clienteService.ObtenerClientesPorVeterinariaId(id);
+                var veterinariasDTO = await _clienteService.ObtenerClientesPorVeterinariaIdAsync(id);
 
                 return Ok(veterinariasDTO);
 
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
 
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -71,16 +72,16 @@ namespace API_Veterinaria.Controllers
         {
             try
             {
-                var clienteDTO = await _clienteService.RegistrarCliente(dto);
+                var clienteDTO = await _clienteService.RegistrarClienteAsync(dto);
 
                 return CreatedAtRoute("ObtenerCliente", new { clienteDTO.Id }, clienteDTO);
 
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
 
-            }catch (UnauthorizedAccessException ex)
+            }catch (ForbidenException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -95,15 +96,15 @@ namespace API_Veterinaria.Controllers
         {
             try
             {
-                await _clienteService.ActualizarCliente(id, dto);
+                await _clienteService.ActualizarClienteAsync(id, dto);
 
                 return NoContent();
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
                 return Forbid(ex.Message);
             }
@@ -118,15 +119,15 @@ namespace API_Veterinaria.Controllers
         {
             try
             {
-                await _clienteService.ActualizarEstatusCliente(id);
+                await _clienteService.ActivarDesactivarClienteAsync(id);
 
                 return NoContent();
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
                 return Forbid(ex.Message);
             }

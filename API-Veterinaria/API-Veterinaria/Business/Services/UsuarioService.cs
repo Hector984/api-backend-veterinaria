@@ -16,17 +16,15 @@ namespace API_Veterinaria.Business.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly UserManager<Usuario> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly IVeterinariaRepository _veterinariaRepository;
         private readonly SignInManager<Usuario> _signInManager;
 
         public UsuarioService(IHttpContextAccessor contextAccesor, IUsuarioRepository usuarioRepository, UserManager<Usuario> userManager,
-            IConfiguration configuration, IVeterinariaRepository veterinariaRepository, SignInManager<Usuario> signInManager)
+            IConfiguration configuration, SignInManager<Usuario> signInManager)
         {
             _contextAccesor = contextAccesor;
             _usuarioRepository = usuarioRepository;
             _userManager = userManager;
             _configuration = configuration;
-            _veterinariaRepository = veterinariaRepository;
             _signInManager = signInManager;
         }
 

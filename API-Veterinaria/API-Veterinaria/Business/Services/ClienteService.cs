@@ -2,6 +2,7 @@
 using API_Veterinaria.Core.DTOs.Cliente;
 using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
+using API_Veterinaria.Exceptions;
 using AutoMapper;
 
 namespace API_Veterinaria.Business.Services
@@ -22,13 +23,13 @@ namespace API_Veterinaria.Business.Services
             _mapper = mapper;
         }
 
-        public async Task<ClienteDTO?> ObtenerClientePorId(int clienteId)
+        public async Task<ClienteDTO?> ObtenerClientePorIdAsync(int clienteId)
         {
-            var cliente = await _clienteRepository.GetById(clienteId);
+            var cliente = await _clienteRepository.ObtenerClientePorId(clienteId);
 
             if (cliente == null)
             {
-                throw new KeyNotFoundException("Cliente no encontrado"); 
+                throw new NotFoundException("Cliente no encontrado"); 
             }
 
             var clienteDTO = _mapper.Map<ClienteDTO>(cliente);
@@ -36,59 +37,59 @@ namespace API_Veterinaria.Business.Services
             return clienteDTO;
         }
 
-        public async Task<IEnumerable<ClienteDTO>> ObtenerClientesPorVeterinariaId(int veterinariaId)
+        public async Task<IEnumerable<ClienteDTO>> ObtenerClientesPorVeterinariaIdAsync(int veterinariaId)
         {
 
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
-            var veterinaria = await _veterinariaRepository.GetByIdAsync(veterinariaId);
+            var veterinaria = await _veterinariaRepository.ObtenerVeterinariaPorId(veterinariaId);
 
             if (veterinaria is null)
             {
-                throw new KeyNotFoundException("Veterinaria no encontrada");
+                throw new NotFoundException("Veterinaria no encontrada");
             }
 
             if (usuario.Id != veterinaria.UsuarioId)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para esta acción");
+                throw new ForbidenException("No tienes permiso para esta acción");
             }
 
-            var clientes = await _clienteRepository.GetAllClientesByVeterinariaId(veterinariaId);
+            var clientes = await _clienteRepository.ObtenerClientesPorVeterinariaId(veterinariaId);
 
             var clientesDTO = _mapper.Map<IEnumerable<ClienteDTO>>(clientes);
 
             return clientesDTO;
         }
 
-        public async Task<ClienteDTO> RegistrarCliente(RegistrarClienteDTO dto)
+        public async Task<ClienteDTO> RegistrarClienteAsync(RegistrarClienteDTO dto)
         {
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
-            var veterinaria = await _veterinariaRepository.GetByIdAsync(dto.VeterinariaId);
+            var veterinaria = await _veterinariaRepository.ObtenerVeterinariaPorId(dto.VeterinariaId);
 
             if (veterinaria is null)
             {
-                throw new KeyNotFoundException("Veterinaria no encontrada");
+                throw new NotFoundException("Veterinaria no encontrada");
             }
 
             if (usuario.Id != veterinaria.UsuarioId)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para esta acción");
+                throw new ForbidenException("No tienes permiso para esta acción");
             }
 
             var cliente = _mapper.Map<Cliente>(dto);
 
-            await _clienteRepository.Add(cliente);
+            await _clienteRepository.ReggistrarCliente(cliente);
 
             var clienteDTO = _mapper.Map<ClienteDTO>(cliente);
 
@@ -96,67 +97,67 @@ namespace API_Veterinaria.Business.Services
 
         }
 
-        public async Task ActualizarCliente(int clienteId, ActualizarClienteDTO dto)
+        public async Task ActualizarClienteAsync(int clienteId, ActualizarClienteDTO dto)
         {
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
-            var veterinaria = await _veterinariaRepository.GetByIdAsync(dto.VeterinariaId);
+            var veterinaria = await _veterinariaRepository.ObtenerVeterinariaPorId(dto.VeterinariaId);
 
             if (veterinaria is null)
             {
-                throw new KeyNotFoundException("Veterinaria no encontrada");
+                throw new NotFoundException("Veterinaria no encontrada");
             }
 
             if (usuario.Id != veterinaria.UsuarioId)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para esta acción");
+                throw new ForbidenException("No tienes permiso para esta acción");
             }
 
-            var clienteDB = await _clienteRepository.GetById(clienteId);
+            var clienteDB = await _clienteRepository.ObtenerClientePorId(clienteId);
 
             if (clienteDB is null)
             {
-                throw new KeyNotFoundException("Cliente no encontrado");
+                throw new NotFoundException("Cliente no encontrado");
             }
 
             if (veterinaria.Id != clienteDB.VeterinariaId)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para esta acción");
+                throw new ForbidenException("No tienes permiso para esta acción");
             }
 
             var cliente = _mapper.Map(dto, clienteDB);
 
-            await _clienteRepository.Update(cliente);
+            await _clienteRepository.ActualizarCliente(cliente);
 
         }
 
-        public async Task ActualizarEstatusCliente(int clienteId)
+        public async Task ActivarDesactivarClienteAsync(int clienteId)
         {
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
-            var clienteDB = await _clienteRepository.GetClienteByIdConVeterinaria(clienteId);
+            var clienteDB = await _clienteRepository.ObtenerClientePorIdConVeterinaria(clienteId);
 
             if (clienteDB is null)
             {
-                throw new KeyNotFoundException("Cliente no encontrado");
+                throw new NotFoundException("Cliente no encontrado");
             }
 
             if (clienteDB.Veterinaria.UsuarioId != usuario.Id)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para esta acción");
+                throw new ForbidenException("No tienes permiso para esta acción");
             }
 
-            await _clienteRepository.Delete(clienteDB);
+            await _clienteRepository.ActivarDesactivar(clienteDB);
         }
     }
 }

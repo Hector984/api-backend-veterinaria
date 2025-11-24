@@ -1,5 +1,6 @@
 ﻿using API_Veterinaria.Business.Interfaces;
 using API_Veterinaria.Core.DTOs.Consulta;
+using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,15 +23,15 @@ namespace API_Veterinaria.Controllers
         {
             try
             {
-                var consultaDTO = await _consultaService.RegistrarConsulta(dto);
+                var consultaDTO = await _consultaService.RegistrarConsultaAsync(dto);
 
                 return consultaDTO;
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
                 return Forbid(ex.Message);
             }

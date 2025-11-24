@@ -13,34 +13,34 @@ namespace API_Veterinaria.Data.Repositories
             _context = context;
         }
 
-        public async Task<Veterinaria> GetByIdAsync(int id)
+        public async Task<Veterinaria?> ObtenerVeterinariaPorId(int id)
         {
             return await _context.Veterinarias.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<Veterinaria> GetByUserIdAsync(string userId)
+        public async Task<Veterinaria?> ObtenerVeterinariaPorDuenoId(string userId)
         {
             return await _context.Veterinarias.FirstOrDefaultAsync(x => x.UsuarioId == userId);
         }
 
-        public async Task<IEnumerable<Veterinaria>> GetAllAsync()
+        public async Task<IEnumerable<Veterinaria>> ObtenerVeterinarias()
         {
             return await _context.Veterinarias.ToListAsync();
         }
 
-        public async Task AddAync(Veterinaria veterinaria)
+        public async Task RegistrarVeterinaria(Veterinaria veterinaria)
         {
             await _context.Veterinarias.AddAsync(veterinaria);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(Veterinaria veterinaria)
+        public async Task ActualizarVeterinaria(Veterinaria veterinaria)
         {
             _context.Veterinarias.Update(veterinaria);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(Veterinaria veterinaria)
+        public async Task ActivarDesactivarVeterinaria(Veterinaria veterinaria)
         {
             _context.Veterinarias.Remove(veterinaria);
             await _context.SaveChangesAsync();

@@ -4,11 +4,11 @@ namespace API_Veterinaria.Data.Interfaces
 {
     public interface IClienteRepository
     {
-        Task<Cliente?> GetById(int id);
-        Task<IEnumerable<Cliente>> GetAllClientesByVeterinariaId(int veterinariaId);
-        Task<Cliente?> GetClienteByIdConVeterinaria(int id);
-        Task Add(Cliente cliente);
-        Task Update(Cliente cliente);
-        Task Delete(Cliente cliente);
+        Task<Cliente?> ObtenerClientePorId(int id);
+        Task<IEnumerable<Cliente>> ObtenerClientesPorVeterinariaId(int veterinariaId);
+        Task<Cliente?> ObtenerClientePorIdConVeterinaria(int id);
+        Task ReggistrarCliente(Cliente cliente);
+        Task ActualizarCliente(Cliente cliente);
+        Task ActivarDesactivar(Cliente cliente);
     }
 }

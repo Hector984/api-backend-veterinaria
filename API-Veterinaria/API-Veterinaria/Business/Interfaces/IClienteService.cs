@@ -5,11 +5,11 @@ namespace API_Veterinaria.Business.Interfaces
 {
     public interface IClienteService
     {
-        Task<ClienteDTO?> ObtenerClientePorId(int clienteId);
-        Task<IEnumerable<ClienteDTO>> ObtenerClientesPorVeterinariaId(int veterinariaId);
-        Task<ClienteDTO> RegistrarCliente(RegistrarClienteDTO dto);
-        Task ActualizarCliente(int clienteId, ActualizarClienteDTO dto);
-        Task ActualizarEstatusCliente(int clienteId);
+        Task<ClienteDTO?> ObtenerClientePorIdAsync(int clienteId);
+        Task<IEnumerable<ClienteDTO>> ObtenerClientesPorVeterinariaIdAsync(int veterinariaId);
+        Task<ClienteDTO> RegistrarClienteAsync(RegistrarClienteDTO dto);
+        Task ActualizarClienteAsync(int clienteId, ActualizarClienteDTO dto);
+        Task ActivarDesactivarClienteAsync(int clienteId);
     }
 
 }

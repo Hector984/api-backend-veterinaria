@@ -1,6 +1,7 @@
 ﻿using API_Veterinaria.Business.Interfaces;
 using API_Veterinaria.Business.Services;
 using API_Veterinaria.Core.DTOs.Mascota;
+using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,9 +29,9 @@ namespace API_Veterinaria.Controllers
 
                 return Ok(mascotaDTO);
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -47,11 +48,11 @@ namespace API_Veterinaria.Controllers
 
                 return CreatedAtRoute("ObtenerMascota", new { mascotaDTO.Id }, mascotaDTO);
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound();
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
                 return Forbid(ex.Message);
             }
@@ -70,13 +71,13 @@ namespace API_Veterinaria.Controllers
 
                 return Ok(mascotasDTO);
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound();
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
-                return Forbid(ex.Message);
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -93,17 +94,17 @@ namespace API_Veterinaria.Controllers
 
                 return Ok(mascotasDTO);
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound();
             }
-            catch (InvalidOperationException ex)
+            catch (NotActiveException ex)
             {
-                return Forbid(ex.Message);
+                return Conflict();
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
-                return Forbid(ex.Message);
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -120,18 +121,18 @@ namespace API_Veterinaria.Controllers
 
                 return NoContent();
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
-                return Forbid(ex.Message);
+                return Forbid();
             }
-            catch (InvalidOperationException ex)
+            catch (NotActiveException ex)
             {
                 // Regresa un 409
-                return Conflict(ex.Message);
+                return Conflict();
             }
             catch (Exception ex)
             {
@@ -148,18 +149,18 @@ namespace API_Veterinaria.Controllers
 
                 return NoContent();
             }
-            catch (KeyNotFoundException ex)
+            catch (NotFoundException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound();
             }
-            catch (UnauthorizedAccessException ex)
+            catch (ForbidenException ex)
             {
-                return Forbid(ex.Message);
+                return Forbid();
             }
-            catch (InvalidOperationException ex)
+            catch (NotActiveException ex)
             {
                 // Regresa un 409
-                return Conflict(ex.Message);
+                return Conflict();
             }
             catch (Exception ex)
             {

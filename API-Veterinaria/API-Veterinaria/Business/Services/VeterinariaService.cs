@@ -1,8 +1,8 @@
 ﻿using API_Veterinaria.Business.Interfaces;
-using API_Veterinaria.Core.DTOs.Autenticacion;
 using API_Veterinaria.Core.DTOs.Veterinaria;
 using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
+using API_Veterinaria.Exceptions;
 using AutoMapper;
 
 namespace API_Veterinaria.Business.Services
@@ -20,43 +20,43 @@ namespace API_Veterinaria.Business.Services
             _mapper = mapper;
         }
 
-        public async Task<VeterinariaDTO> PostVeterinariaAsync(RegistrarVeterinariaDTO registrarVeterinariaDTO)
+        public async Task<VeterinariaDTO> RegistrarVeterinariaAsync(RegistrarVeterinariaDTO registrarVeterinariaDTO)
         {
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
             var veterinaria = _mapper.Map<Veterinaria>(registrarVeterinariaDTO);
 
             veterinaria.UsuarioId = usuario.Id;
 
-            await _veterinariaRepository.AddAync(veterinaria);
+            await _veterinariaRepository.RegistrarVeterinaria(veterinaria);
 
             var veterinariaDTO = _mapper.Map<VeterinariaDTO>(veterinaria);
 
             return veterinariaDTO;
         }
 
-        public async Task DeleteAsync(Veterinaria veterinaria)
+        public async Task<IEnumerable<VeterinariaDTO>> ObtenerVeterinariasAsync()
         {
-            await _veterinariaRepository.DeleteAsync(veterinaria);
-        }
-
-        public async Task<IEnumerable<VeterinariaDTO>> GetVeterinariasAsync()
-        {
-            var veterinarias = await _veterinariaRepository.GetAllAsync();
+            var veterinarias = await _veterinariaRepository.ObtenerVeterinarias();
 
             var veterinariasDTO = _mapper.Map<IEnumerable<VeterinariaDTO>>(veterinarias);
 
             return veterinariasDTO;
         }
 
-        public async Task<VeterinariaDTO> GetVeterinariaByIdAsync(int id)
+        public async Task<VeterinariaDTO> ObtenerVeterinariaPorIdAsync(int id)
         {
-            var veterinaria = await _veterinariaRepository.GetByIdAsync(id);
+            var veterinaria = await _veterinariaRepository.ObtenerVeterinariaPorId(id);
+
+            if (veterinaria is null)
+            {
+                throw new NotFoundException("Veterinaria no encontrada");
+            }
 
             var veterinariaDTO = _mapper.Map<VeterinariaDTO>(veterinaria);
 
@@ -64,23 +64,23 @@ namespace API_Veterinaria.Business.Services
 
         }
 
-        public async Task<VeterinariaDTO> GetVeterinariaUsuarioAsync()
+        public async Task<VeterinariaDTO> ObtenerVeterinariaPorDuenoIdAsync()
         {
             var usuario = await _usuarioService.GetUsuarioByEmail();
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
-            var veterinaria = await _veterinariaRepository.GetByUserIdAsync(usuario.Id);
+            var veterinaria = await _veterinariaRepository.ObtenerVeterinariaPorDuenoId(usuario.Id);
 
             var veterinariaDTO = _mapper.Map<VeterinariaDTO>(veterinaria);
 
             return veterinariaDTO;
         }
 
-        public async Task UpdateVeterinariaAsync(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO)
+        public async Task ActualizarVeterinariaAsync(int id, RegistrarVeterinariaDTO registrarVeterinariaDTO)
         {
 
             // revisar que el usuario esta autenticado y que esta registrado en la base de datos
@@ -89,30 +89,30 @@ namespace API_Veterinaria.Business.Services
 
             if (usuario is null)
             {
-                throw new KeyNotFoundException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
             // Verificamos que la veterinaria existe
-            var veterinariaExiste = await _veterinariaRepository.GetByIdAsync(id);
+            var veterinariaExiste = await _veterinariaRepository.ObtenerVeterinariaPorId(id);
 
             if (veterinariaExiste is null)
             {
-                throw new KeyNotFoundException("La veterinaria no existe");
+                throw new NotFoundException("La veterinaria no existe");
             }
 
             // Verificamos que la veterinaria le pertenezca al usuario que esta actualizando la ínfo
             if(usuario.Id != veterinariaExiste.UsuarioId)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para actualizar la veterinaria");
+                throw new ForbidenException("No tienes permiso para actualizar la veterinaria");
             }
 
             var veterinaria = _mapper.Map(registrarVeterinariaDTO, veterinariaExiste);
 
-            await _veterinariaRepository.UpdateAsync(veterinaria);
+            await _veterinariaRepository.ActualizarVeterinaria(veterinaria);
             
         }
 
-        public async Task DeleteVeterinariaAsync(int id)
+        public async Task ActivarDesactivarVeterinariaAsync(int id)
         {
             // revisar que el usuario esta autenticado y que esta registrado en la base de datos
 
@@ -120,24 +120,24 @@ namespace API_Veterinaria.Business.Services
 
             if (usuario is null)
             {
-                throw new UnauthorizedAccessException("Usuario no encontrado");
+                throw new NotFoundException("Usuario no encontrado");
             }
 
             // Verificamos que la veterinaria existe
-            var veterinariaExiste = await _veterinariaRepository.GetByIdAsync(id);
+            var veterinariaExiste = await _veterinariaRepository.ObtenerVeterinariaPorId(id);
 
             if (veterinariaExiste is null)
             {
-                throw new KeyNotFoundException("La veterinaria no existe");
+                throw new NotFoundException("La veterinaria no existe");
             }
 
             // Verificamos que la veterinaria le pertenezca al usuario que esta actualizando la ínfo
             if (usuario.Id != veterinariaExiste.UsuarioId)
             {
-                throw new UnauthorizedAccessException("No tienes permiso para realizar esta acción");
+                throw new ForbidenException("No tienes permiso para realizar esta acción");
             }
 
-            await _veterinariaRepository.DeleteAsync(veterinariaExiste);
+            await _veterinariaRepository.ActivarDesactivarVeterinaria(veterinariaExiste);
         }
     }
 }

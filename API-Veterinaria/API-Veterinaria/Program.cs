@@ -30,16 +30,37 @@ builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddIdentityServices(builder.Configuration);
 
+//builder.Services.AddSwagger();
+builder.Services.AddSwaggerGen(opciones =>
+{
+    opciones.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Yolcatl (Náhuatl - \"Animal con corazón\")",
+        Description = " Web API para la administración de veterinarias.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Email = "hectorantoniojimenezmanzo@gmail.com",
+            Name = "Héctor Antonio Jiménez Manzo",
+            Url = new Uri("https://www.linkedin.com/in/h%C3%A9ctor-antonio-jim%C3%A9nez-manzo/")
+        }
+    });
+
+    opciones.EnableAnnotations();
+});
 
 var app = builder.Build();
 
 // Area de middlewares
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseCors();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-//    app.MapOpenApi();
+//    //app.MapOpenApi();
 //}
 
 //app.UseHttpsRedirection();
