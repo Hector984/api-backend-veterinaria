@@ -40,25 +40,40 @@ VeterinariaAPI/
 ├── Business/         # Lógica de negocio
 ├── Data/            # Repositorios y DbContext
 ├── Core/            # Entidades y DTOs
-└── Infrastructure/  # Servicios externos
 ```
 
 ## 📚 Endpoints principales
 
 ### Autenticación
-- POST `/api/auth/login`
-- POST `/api/auth/register`
+- POST `/api/usuarios/iniciar-sesion`
+- POST `/api/usuarios/registro`
+- GET `/api/usuarios/renovar-token`
 
 ### Veterinarias
-- GET `/api/veterinarias/mis-veterinarias`
 - POST `/api/veterinarias`
+- GET `/api/veterinarias`
+- GET `/api/veterinarias/{id}`
+- GET `/api/veterinarias/mi-veterinaria`
 - PUT `/api/veterinarias/{id}`
+- DELETE `/api/veterinarias/{id}`
 
+### Clientes
+- POST `/api/clientes`
+- GET `/api/clientes/{id}`
+- GET `/api/clientes/veterinaria/{id}`
+- PUT `/api/clientes/{id}`
+- DELETE `/api/clientes/{id}`
+  
 ### Mascotas
-- GET `/api/mascotas`
 - POST `/api/mascotas`
+- GET `/api/mascotas/{id}`
+- GET `/api/mascotas/cliente/{id}`
+- GET `/api/mascotas/veterinaria/{id}`
 - PUT `/api/mascotas/{id}`
 - DELETE `/api/mascotas/{id}`
+
+### Consultas
+- POST `/api/consultas`
 
 ## 🔐 Autenticación
 
@@ -82,4 +97,4 @@ MIT
 
 ## 👤 Autor
 
-Tu Nombre - [GitHub](https://github.com/tuusuario)
+Héctor Antonio Jiménez Manzo - [GitHub](https://github.com/tuusuario)
