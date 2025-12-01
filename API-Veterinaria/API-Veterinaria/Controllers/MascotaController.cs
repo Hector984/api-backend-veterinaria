@@ -1,9 +1,9 @@
 ﻿using API_Veterinaria.Business.Interfaces;
-using API_Veterinaria.Business.Services;
 using API_Veterinaria.Core.DTOs.Mascota;
 using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API_Veterinaria.Controllers
 {
@@ -21,6 +21,10 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpGet("{id:int}", Name ="ObtenerMascota")]
+        [SwaggerOperation(Summary = "Obtiene una mascota por id", Description = "Devuelve la mascota indicada por su identificador. Respuestas: 200 (OK) con MascotaDTO, 404 (No encontrado), 500 (Error interno).")]
+        [ProducesResponseType(typeof(MascotaDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MascotaDTO>> ObtenerMascota(int id)
         {
             try
@@ -40,6 +44,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Registra una nueva mascota", Description = "Crea una mascota asociada a un cliente. Parámetro: RegistrarMascotaDTO. Respuestas: 201 (Creado) con MascotaDTO, 404 (No encontrado), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(typeof(MascotaDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MascotaDTO>> RegistrarMascota(RegistrarMascotaDTO dto)
         {
             try
@@ -63,6 +72,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpGet("cliente/{id:int}")]
+        [SwaggerOperation(Summary = "Obtiene mascotas por cliente", Description = "Devuelve las mascotas asociadas al cliente indicado. Respuestas: 200 (OK) con IEnumerable<MascotaDTO>, 404 (No encontrado), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(typeof(IEnumerable<MascotaDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<MascotaDTO>>> ObtenerMascotasPorCliente(int id)
         {
             try
@@ -86,6 +100,12 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpGet("veterinaria/{id:int}")]
+        [SwaggerOperation(Summary = "Obtiene mascotas por veterinaria", Description = "Devuelve las mascotas asociadas a la veterinaria indicada. Respuestas: 200 (OK) con IEnumerable<MascotaDTO>, 404 (No encontrado), 409 (Veterinaria no activa), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(typeof(IEnumerable<MascotaDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<MascotaDTO>>> ObtenerMascotasPorVeterinaria(int id)
         {
             try
@@ -113,6 +133,12 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [SwaggerOperation(Summary = "Actualiza una mascota", Description = "Actualiza los datos de la mascota indicada. Parámetros: id y ActualizarMascotaDTO. Respuestas: 204 (Sin contenido), 404 (No encontrado), 403 (Prohibido), 409 (Recurso no activo), 500 (Error interno).")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<MascotaDTO>>> ActualizarMascota(int id, ActualizarMascotaDTO dto)
         {
             try
@@ -141,6 +167,12 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [SwaggerOperation(Summary = "Activa o desactiva una mascota", Description = "Alterna el estado activo de la mascota indicada. Parámetro: id. Respuestas: 204 (Sin contenido), 404 (No encontrado), 403 (Prohibido), 409 (Recurso no activo), 500 (Error interno).")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ActivarDesactivarMascota(int id)
         {
             try

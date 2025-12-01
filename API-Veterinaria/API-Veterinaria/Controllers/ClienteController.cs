@@ -3,6 +3,7 @@ using API_Veterinaria.Core.DTOs.Cliente;
 using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API_Veterinaria.Controllers
 {
@@ -20,6 +21,10 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpGet("{id:int}", Name ="ObtenerCliente")]
+        [SwaggerOperation(Summary = "Obtiene un cliente por id", Description = "Devuelve el cliente indicado por su identificador. Respuestas: 200 (OK) con ClienteDTO, 404 (No encontrado), 500 (Error interno).")]
+        [ProducesResponseType(typeof(ClienteDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ClienteDTO>> ObtenerCliente([FromRoute] int id)
         {
             try
@@ -41,6 +46,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpGet("veterinaria/{id:int}")]
+        [SwaggerOperation(Summary = "Obtiene clientes por veterinaria", Description = "Devuelve los clientes asociados a la veterinaria indicada. Respuestas: 200 (OK) con IEnumerable<ClienteDTO>, 404 (No encontrado), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(typeof(IEnumerable<ClienteDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<ClienteDTO>>> ObtenerClientesPorVeterinariaId([FromRoute] int id)
         {
             try
@@ -68,6 +78,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Registra un nuevo cliente", Description = "Crea un cliente asociado a una veterinaria. Parámetro: RegistrarClienteDTO. Respuestas: 201 (Creado) con ClienteDTO, 404 (No encontrado), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(typeof(ClienteDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ClienteDTO>> RegistrarCliente(RegistrarClienteDTO dto)
         {
             try
@@ -92,6 +107,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [SwaggerOperation(Summary = "Actualiza un cliente", Description = "Actualiza los datos del cliente indicado. Parámetros: id y ActualizarClienteDTO. Respuestas: 204 (Sin contenido), 404 (No encontrado), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ActualizarCliente(int id, ActualizarClienteDTO dto)
         {
             try
@@ -115,6 +135,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [SwaggerOperation(Summary = "Activa o desactiva un cliente", Description = "Alterna el estado activo del cliente indicado. Parámetro: id. Respuestas: 204 (Sin contenido), 404 (No encontrado), 403 (Prohibido), 500 (Error interno).")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ActivarDesactivarCliente(int id)
         {
             try

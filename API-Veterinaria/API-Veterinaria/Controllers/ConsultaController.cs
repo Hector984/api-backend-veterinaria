@@ -3,6 +3,7 @@ using API_Veterinaria.Core.DTOs.Consulta;
 using API_Veterinaria.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API_Veterinaria.Controllers
 {
@@ -19,6 +20,11 @@ namespace API_Veterinaria.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation(Summary = "Registra una nueva consulta", Description = "Crea una consulta con los datos indicados en el DTO. Devuelve la consulta creada.")]
+        [ProducesResponseType(typeof(ConsultaDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ConsultaDTO>> RegistarConsulta(RegistrarConsultaDTO dto)
         {
             try
