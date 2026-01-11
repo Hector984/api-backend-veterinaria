@@ -15,7 +15,7 @@ namespace API_Veterinaria.Core.Entities
 
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public required string UsuarioId { get; set; }
-        public required Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         // IAuditable interface
         public bool Activo { get; set; }

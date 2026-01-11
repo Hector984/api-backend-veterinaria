@@ -37,7 +37,7 @@ namespace API_Veterinaria.Controllers
         [ProducesResponseType(typeof(VeterinariaDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> ObtenerVeterinariaPorId(int id)
+        public async Task<ActionResult<VeterinariaDTO>> ObtenerVeterinariaPorId(int id)
         {
             try
             {
