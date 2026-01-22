@@ -1,5 +1,8 @@
-﻿using API_Veterinaria.Core.Entities;
+﻿using API_Veterinaria.Core.DTOs.Mascota;
+using API_Veterinaria.Core.DTOs.Veterinaria;
+using API_Veterinaria.Core.Entities;
 using API_Veterinaria.Data.Interfaces;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_Veterinaria.Data.Repositories
@@ -15,12 +18,18 @@ namespace API_Veterinaria.Data.Repositories
 
         public async Task<Veterinaria?> ObtenerVeterinariaPorId(int id)
         {
-            return await _context.Veterinarias.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Veterinarias
+               .Include(v => v.Clientes)
+                    .ThenInclude(c => c.Mascotas)
+               .FirstOrDefaultAsync(v => v.Id == id);
         }
 
         public async Task<Veterinaria?> ObtenerVeterinariaPorDuenoId(string userId)
         {
-            return await _context.Veterinarias.FirstOrDefaultAsync(x => x.UsuarioId == userId);
+            return await _context.Veterinarias
+                .Include(v => v.Clientes)
+                    .ThenInclude(c => c.Mascotas)
+                .FirstOrDefaultAsync(x => x.UsuarioId == userId);
         }
 
         public async Task<IEnumerable<Veterinaria>> ObtenerVeterinarias()

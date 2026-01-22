@@ -9,7 +9,8 @@
         public string Email { get; set; } = string.Empty;
         public required string Telefono { get; set; }
         public required int VeterinariaId { get; set; }
-        public required Veterinaria Veterinaria { get; set; }
+        public Veterinaria? Veterinaria { get; set; }
+        public ICollection<Mascota> Mascotas { get; set; } = new List<Mascota>();
 
         // IAuditable interface
         public bool Activo { get; set; }

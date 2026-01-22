@@ -1,4 +1,6 @@
-﻿namespace API_Veterinaria.Core.DTOs.Veterinaria
+﻿using API_Veterinaria.Core.DTOs.Mascota;
+
+namespace API_Veterinaria.Core.DTOs.Veterinaria
 {
     public class VeterinariaDTO
     {
@@ -8,5 +10,6 @@
         public required string Telefono { get; set; }
         public string? Email { get; set; }
         public bool Activo { get; set; }
+        public List<MascotaDTO> Mascotas { get; set; } = new List<MascotaDTO>();
     }
 }

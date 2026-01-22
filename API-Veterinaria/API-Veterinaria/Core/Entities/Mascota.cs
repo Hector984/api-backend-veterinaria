@@ -11,7 +11,7 @@
         public DateTime FechaNacimiento { get; set; }
         public string? Observaciones { get; set; }
         public int ClienteId { get; set; }
-        public required Cliente Cliente { get; set; }
+        public Cliente? Cliente { get; set; }
         // IAuditable interface
         public bool Activo { get; set; }
         public DateTime FechaCreacion { get; set; }

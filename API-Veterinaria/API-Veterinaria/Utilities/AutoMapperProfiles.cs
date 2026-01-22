@@ -15,7 +15,9 @@ namespace API_Veterinaria.Utilities
 
             // Mepeos de Veterinaria
             CreateMap<RegistrarVeterinariaDTO, Veterinaria>().ReverseMap();
-            CreateMap<Veterinaria, VeterinariaDTO>();
+            CreateMap<Veterinaria, VeterinariaDTO>()
+                .ForMember(ent => ent.Mascotas, opt => opt.MapFrom(src =>
+                src.Clientes.SelectMany(c => c.Mascotas)));
 
             // Mapeos de Cliente
             CreateMap<Cliente, ClienteDTO>()
@@ -28,6 +30,8 @@ namespace API_Veterinaria.Utilities
 
             //Mapeos de Mascota
             CreateMap<Mascota, MascotaDTO>()
+                .ForMember(ent => ent.ClienteId, 
+                    config => config.MapFrom(ent => ent.Cliente.Id))
                 .ForMember(ent => ent.NombreCliente,
                     config => config.MapFrom(ent => MapearNombreCompletoCliente(ent.Cliente)))
                 .ForMember(ent => ent.TelefonoCliente,
